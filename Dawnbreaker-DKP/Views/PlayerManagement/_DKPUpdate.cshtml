@@ -1,0 +1,27 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.PlayerDKPUpdateModel
+
+<h3>Manual DKP Update</h3>
+@using (Html.BeginForm("UpdateDKP", "PlayerManagement", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.PlayerName)
+    <div class="row">
+        <div class="col-md-2">
+            <h4>New DKP Total:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(x => x.NewDKPTotal, new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-2">
+            <h4>Reason for Change:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(x => x.DKPAdjustmentReason, new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <input type="submit" class="btn btn-primary" />
+}
+<hr/>

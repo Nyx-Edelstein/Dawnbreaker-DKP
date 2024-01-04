@@ -1,0 +1,36 @@
+﻿@model System.Collections.Generic.List<Dawnbreaker_DKP.Data.DKP.DKPLedgerEntry>
+@{
+    var ledgerReadonly = ViewData["LedgerReadonly"] as bool? ?? false;
+}
+<h3>Ledger</h3>
+<table class="table table-striped table-hover " style="width: 500px">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Entry</th>
+            <th>DKP</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+        <tr>
+            <td>@entry.PlayerName</td>
+            @if (entry.ItemId <= 0)
+            {
+                <td>@entry.EntryText</td>
+            }
+            else
+            {
+                <td><a href="https://classic.wowhead.com/item=@entry.ItemId" target="_blank" style="color: #AA4BFF">@entry.EntryText</a></td>
+            }
+            <td>@entry.DKPAmount</td>
+            @if (!ledgerReadonly)
+            {
+                <td>@Html.ActionLink("Remove", "RemoveLedgerEntry", "RaidSessions", new { raidSessionId = entry.RaidSessionId, entryId = entry.EntryId }, new { @class = "text-danger" })</td>
+            }
+        </tr>
+        }
+    </tbody>
+</table>

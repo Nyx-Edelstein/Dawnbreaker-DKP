@@ -1,0 +1,31 @@
+﻿@model Dawnbreaker_DKP.Models.Account.AccountRecover
+
+@{
+    ViewBag.Title = "Recover Password";
+}
+
+<div>
+    @using (Html.BeginForm("Recover", "Account", FormMethod.Post))
+    {
+        <h4>Enter your recovery ticket here along with a new password.</h4>
+        <span>Hint: Try a <a href="https://www.lastpass.com/" target="_blank">password manager</a> so this doesn't happen in the future.</span>
+        <br />
+        <br />
+        @Html.TextBoxFor(x => x.Username, new { placeholder = "Username" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+        @Html.TextBoxFor(x => x.RecoveryToken, new { placeholder = "Recovery Ticket" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.RecoveryToken)
+        </div>
+        @Html.PasswordFor(x => x.Password, new { placeholder = "New Password" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        <input type="submit" class="btn btn-primary" />
+    }
+    <br />
+    @Html.ActionLink("Need to resend the recovery email?", "PasswordRecovery", "Account")
+</div>
+

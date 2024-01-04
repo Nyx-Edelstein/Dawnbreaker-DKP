@@ -1,0 +1,70 @@
+﻿@model Dawnbreaker_DKP.Models.Account.AccountRegistrationRaw
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<div id="register-form" style="margin-left: 10px">
+    <p>
+        <span size="3"><strong>Note:</strong> It is not necessary for guild members to register an account.</span>
+        <br/>
+        <span>This is only for officers and site administration purposes.</span>
+    </p>
+    <br />
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+    {
+        @Html.TextBoxFor(x => x.Username, new { placeholder = "Username" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+        @Html.PasswordFor(x => x.Password, new { placeholder = "Password" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        @Html.TextBoxFor(x => x.RecoveryEmail, new { placeholder = "Recovery Email" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.RecoveryEmail)
+        </div>
+
+        <div id="captcha" style="max-width: 200px">
+            <hr />
+            <p id="captcha-msg">Prove you are not a spambot.</p>
+            @Html.TextBoxFor(x => x.ConfirmHuman, new { placeholder = "", autocomplete = "off" })
+            <hr />
+        </div>
+
+        <div style="max-width: 200px">
+            <input id="tac-ack" type="checkbox" style="float: left; width: 20px" />
+            <span style="display: block;">I have read and agree to the <a href="/Home/TAC" target="_blank">Terms and Conditions</a>.</span>
+            <br />
+        </div>
+
+        <input id="submit-btn" type="submit" class="btn btn-primary" disabled />
+    }
+    <br />@Html.ActionLink("Already have an account?", "Login", "Account")<br /><br />
+</div>
+<script type="text/javascript">
+
+    function not_spambot(e) {
+        $('#captcha-msg').text('You have successfully proven you are not a spambot. Good job!');
+        $('#ConfirmHuman').hide();
+        setInterval(function() {
+            $('#ConfirmHuman').val(null);
+        }, 50);
+    }
+
+    function tac_acknowledge() {
+        if ($(this).prop('checked')) {
+            $("#submit-btn").removeAttr("disabled");
+        } else {
+            $("#submit-btn").prop("disabled", true);
+        }
+    }
+
+    $(document).ready(function() {
+        $('#register-form').on('touchstart', not_spambot);
+        $('#register-form').on('mousemove', not_spambot);
+        $('#ConfirmHuman').val("I am a spambot.");
+        $('#tac-ack').change(tac_acknowledge);
+    });
+</script>

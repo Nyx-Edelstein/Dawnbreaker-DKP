@@ -1,0 +1,201 @@
+input {
+    width: 200px;
+    padding: 10px, 5px;
+}
+
+hr {
+    border-color: #7a8288;
+}
+
+.topleft {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 5px
+}
+
+.topright {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 5px;
+}
+
+.bodycontent {
+    position: absolute;
+    top: 120px;
+    width: 100%;
+}
+
+details[open] summary ~ * {
+    animation: sweep .5s ease-in-out;
+}
+
+@keyframes sweep {
+    0% {
+        opacity: 0;
+        margin-top: -50px
+    }
+
+    100% {
+        opacity: 1;
+        margin-top: 0px
+    }
+}
+
+
+.panel-druid {
+    border-color: #FF7D0A;
+}
+    .panel-druid > .panel-heading {
+        color: #000000;
+        background-color: #FF7D0A;
+        border-color: #FF7D0A;
+    }
+    .panel-druid > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #FF7D0A;
+    }
+    .panel-druid > .panel-heading .badge {
+        color: #FF7D0A;
+        background-color: #000000;
+    }
+    .panel-druid > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #FF7D0A;
+    }
+
+
+.panel-hunter {
+    border-color: #ABD473;
+}
+    .panel-hunter > .panel-heading {
+        color: #000000;
+        background-color: #ABD473;
+        border-color: #ABD473;
+    }
+    .panel-hunter > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #ABD473;
+    }
+    .panel-hunter > .panel-heading .badge {
+        color: #ABD473;
+        background-color: #000000;
+    }
+    .panel-hunter > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #ABD473;
+    }
+
+
+.panel-mage {
+    border-color: #69CCF0;
+}
+    .panel-mage > .panel-heading {
+        color: #000000;
+        background-color: #69CCF0;
+        border-color: #69CCF0;
+    }
+    .panel-mage > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #69CCF0;
+    }
+    .panel-mage > .panel-heading .badge {
+        color: #69CCF0;
+        background-color: #000000;
+    }
+    .panel-mage > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #69CCF0;
+    }
+
+
+.panel-priest {
+    border-color: #FFFFFF;
+}
+    .panel-priest > .panel-heading {
+        color: #000000;
+        background-color: #FFFFFF;
+        border-color: #FFFFFF;
+    }
+    .panel-priest > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #FFFFFF;
+    }
+    .panel-priest > .panel-heading .badge {
+        color: #FFFFFF;
+        background-color: #000000;
+    }
+    .panel-priest > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #FFFFFF;
+    }
+
+.panel-rogue {
+    border-color: #FFF569;
+}
+    .panel-rogue > .panel-heading {
+        color: #000000;
+        background-color: #FFF569;
+        border-color: #FFF569;
+    }
+    .panel-rogue > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #FFF569;
+    }
+    .panel-rogue > .panel-heading .badge {
+        color: #FFF569;
+        background-color: #000000;
+    }
+    .panel-rogue > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #FFF569;
+    }
+
+
+.panel-shaman {
+    border-color: #0070DE;
+}
+    .panel-shaman > .panel-heading {
+        color: #000000;
+        background-color: #0070DE;
+        border-color: #0070DE;
+    }
+    .panel-shaman > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #0070DE;
+    }
+    .panel-shaman > .panel-heading .badge {
+        color: #0070DE;
+        background-color: #000000;
+    }
+    .panel-shaman > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #0070DE;
+    }
+
+.panel-warlock {
+    border-color: #9482C9;
+}
+    .panel-warlock > .panel-heading {
+        color: #000000;
+        background-color: #9482C9;
+        border-color: #9482C9;
+    }
+    .panel-warlock > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #9482C9;
+    }
+    .panel-warlock > .panel-heading .badge {
+        color: #9482C9;
+        background-color: #000000;
+    }
+    .panel-warlock > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #9482C9;
+    }
+
+.panel-warrior {
+    border-color: #C79C6E;
+}
+    .panel-warrior > .panel-heading {
+        color: #000000;
+        background-color: #C79C6E;
+        border-color: #C79C6E;
+    }
+    .panel-warrior > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #C79C6E;
+    }
+    .panel-warrior > .panel-heading .badge {
+        color: #C79C6E;
+        background-color: #000000;
+    }
+    .panel-warrior > .panel-footer + .panel-collapse > .panel-body {
+        border-bottom-color: #C79C6E;
+    }

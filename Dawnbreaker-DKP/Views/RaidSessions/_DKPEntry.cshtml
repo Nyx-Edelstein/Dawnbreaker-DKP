@@ -1,0 +1,13 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.DKPEntryModel
+
+
+@using (Html.BeginForm("MakeLedgerEntry", "RaidSessions", FormMethod.Post))
+{
+    <h3>Add DKP Entry</h3>
+    <br/>
+    @Html.HiddenFor(x => x.RaidSessionId)
+    @Html.TextAreaFor(x => x.EntryString, new { @class = "form-control", style = "width:350px", placeholder = "Paste addon data here" })
+    <br />
+    <button type="submit" class="btn btn-primary">Add Entry</button>
+}
+<br/>

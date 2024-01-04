@@ -1,0 +1,24 @@
+﻿@model Dawnbreaker_DKP.Models.Account.AccountChangeEmail
+
+@{
+    ViewBag.Title = "Change Recovery Email";
+}
+
+<div>
+    @using (Html.BeginForm("ChangeEmail", "Account", FormMethod.Post))
+    {
+        @Html.TextBoxFor(x => x.Username, new { placeholder = "Username" })
+        <div class="text-warning" style="margin: 10px">
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+        @Html.PasswordFor(x => x.Password, new { placeholder = "Password" })
+        <div class="text-warning" style="margin: 10px">
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        @Html.TextBoxFor(x => x.NewEmail, new { placeholder = "New Email" })
+        <div class="text-warning" style="margin: 10px">
+            @Html.ValidationMessageFor(x => x.NewEmail)
+        </div>
+        <input type="submit" class="btn btn-primary" />
+    }
+</div>

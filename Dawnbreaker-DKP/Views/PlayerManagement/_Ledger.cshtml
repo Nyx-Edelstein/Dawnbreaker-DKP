@@ -1,0 +1,29 @@
+﻿@model List<Dawnbreaker_DKP.Web.Models.DKP.DKPViewModel>
+
+<h3>DKP History</h3>
+<table class="table table-striped table-hover " style="width: 500px">
+    <thead>
+        <tr>
+            <th>Source</th>
+            <th>Entry</th>
+            <th>DKP</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            <tr>
+                <td>@entry.Source</td>
+                @if (entry.ItemId <= 0)
+                {
+                    <td>@entry.EntryText</td>
+                }
+                else
+                {
+                    <td><a href="https://classic.wowhead.com/item=@entry.ItemId" target="_blank" style="color: #AA4BFF">@entry.EntryText</a></td>
+                }
+                <td>@entry.DKPAmount</td>
+            </tr>
+        }
+    </tbody>
+</table>

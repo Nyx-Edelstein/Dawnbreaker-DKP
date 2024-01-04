@@ -1,0 +1,91 @@
+﻿@using System.Security.Claims
+@using Dawnbreaker_DKP.Data.User_Data
+@model System.Collections.Generic.List<Dawnbreaker_DKP.Web.Models.DKP.ClassListData>
+@{
+    Func<string, string> ClassColor = classType =>
+    {
+        switch (classType)
+        {
+            case "Druid":
+                return "panel-druid";
+            case "Hunter":
+                return "panel-hunter";
+            case "Mage":
+                return "panel-mage";
+            case "Priest":
+                return "panel-priest";
+            case "Rogue":
+                return "panel-rogue";
+            case "Shaman":
+                return "panel-shaman";
+            case "Warlock":
+                return "panel-warlock";
+            case "Warrior":
+                return "panel-warrior";
+            default:
+                return "panel-default";
+        }
+    };
+    var IsOfficer = User.HasClaim(ClaimTypes.Role, PermissionsLevel.Officer.ToString());
+}
+
+@if (!Model.Any())
+{
+    <h2>No Data</h2>
+}
+else
+{
+    if (IsOfficer)
+    {
+        <btn class="btn btn-warning" id="editBtn">Enable Edit</btn>
+        <hr />
+    }
+    
+
+    <div class="row">
+    @foreach (var classListData in Model)
+    {
+        <div class="panel @ClassColor(classListData.Class)" style="width: 225px; margin: 5px 3px 5px 3px;">
+            <div class="panel-heading">
+                <h4>@classListData.RaidRoster - @classListData.Class</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped table-hover " style="width: 200px; margin: -15px 0px 0px -5px">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            @if (IsOfficer)
+                            {
+                                <th>&nbsp;</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var player in classListData.Players)
+                        {
+                            <tr>
+                                <td>@player.Position</td>
+                                <td>@Html.ActionLink(player.PlayerName, "Details", "Player", new { playerName = player.PlayerName }, new { target = "_blank" })</td>
+                                @if (IsOfficer)
+                                {
+                                    <td class="moveDownBtn" style="display: none;">@Html.ActionLink("_⇊_", "MovePlayerToBottom", "ClassList", new { raidRoster = player.RaidRoster, @classType = player.Class, playerName = player.PlayerName }, new { @class = "text-warning" })</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#editBtn').click(function() {
+                $("#editBtn").hide();
+                $(".moveDownBtn").show();
+            });
+        });
+    </script>
+}

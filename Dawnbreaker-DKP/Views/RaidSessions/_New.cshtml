@@ -1,0 +1,21 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.SessionInitModel
+@{
+    var raidRosters = new SelectList(new[] { "No Roster", "Raid 1", "Raid 2" });
+}
+
+<h3>Create New Session</h3>
+<br />
+@using (Html.BeginForm("New", "RaidSessions", FormMethod.Post))
+{
+    <h4>Raid Name:</h4>
+    <h6>(Do not include date)</h6>
+    @Html.TextBoxFor(x => x.RaidName, null, new { @class = "form-control", style = "width:350px" })
+    <h4>Raid Roster:</h4>
+    @Html.DropDownListFor(x => x.RaidRoster, raidRosters, new { @class = "form-control", style = "height:45px; width:350px" })
+    <h4>Session Initialization Data:</h4>
+    <h6>(Paste copied data from the addon here)</h6>
+    @Html.TextAreaFor(x => x.SessionInitString, new { @class = "form-control", style = "width:350px" })
+    <br />
+    <input type="submit" class="btn btn-primary" value="Create Session" />
+}
+<hr />

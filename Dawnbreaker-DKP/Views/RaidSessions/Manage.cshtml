@@ -1,0 +1,151 @@
+﻿@using Dawnbreaker_DKP.Data.DKP
+@using Dawnbreaker_DKP.Web.Models.DKP
+@model RaidSession
+@{
+    string formattedRaidName(RaidSession session) => $"{session.RaidName} - {session.Date:MMM dd, yyyy}";
+    string formattedPlayerName(SessionParticipantComposite p) => $"{p.Participant.PlayerName} - {p.DKP}";
+
+    ViewBag.Title = formattedRaidName(Model);
+
+    var allParticipants = (ViewData["Participants"] as List<SessionParticipantComposite>) ?? new List<SessionParticipantComposite>();
+
+    var participants = allParticipants.Where(x => !x.Participant.Standby).OrderBy(x => x.Participant.PlayerName).ToList();
+    var standby = allParticipants.Where(x => x.Participant.Standby).OrderBy(x => x.Participant.PlayerName).ToList();
+
+    var sessionLedger = (ViewData["SessionLedger"] as List<DKPLedgerEntry>) ?? new List<DKPLedgerEntry>();
+    var addonData = (ViewData["AddonData"] as string) ?? "";
+}
+<button id="copyDataBtn" class="btn btn-warning">Copy Addon Init Data</button>
+<pre style="display: none" id="luaTable">@addonData</pre>
+<hr />
+@if (!Model.Open)
+{
+    //Readonly
+    <div>
+        <h3>Active Players: (@participants.Count)</h3>
+        <ul>
+            @if (participants.Any())
+            {
+                foreach (var participant in participants)
+                {
+                    <li>@Html.ActionLink(formattedPlayerName(participant), "Edit", "PlayerManagement", new { playerName = participant.Participant.PlayerName }, new { target = "_blank" })</li>
+                }
+            }
+            else
+            {
+                <li><i>No Participants Found</i></li>
+            }
+        </ul>
+        <h3>Standby Players: (@standby.Count)</h3>
+        <ul>
+            @if (standby.Any())
+            {
+                foreach (var participant in standby)
+                {
+                    <li>@Html.ActionLink(formattedPlayerName(participant), "Edit", "PlayerManagement", new { playerName = participant.Participant.PlayerName }, new { target = "_blank" })</li>
+                }
+            }
+            else
+            {
+                <li><i>No Standby Players Found</i></li>
+            }
+        </ul>
+        @{
+            ViewData["LedgerReadonly"] = true;
+        }
+        @Html.Partial("_SessionLedger", sessionLedger)
+        <h3>Session Notes:</h3>
+        <p style="white-space: pre-line">@Model.Notes</p>
+        <h3>Bosses Killed:</h3>
+        <p style="white-space: pre-line">@Model.BossesKilled</p>
+        <h3>DKP Award: @Model.DKPAward</h3>
+        <br />
+    </div>
+}
+else
+{
+    <div>
+        @Html.Partial("_DKPEntry", new DKPEntryModel { RaidSessionId = Model.RaidSessionId })
+        @Html.Partial("_SessionLedger", sessionLedger)
+        <hr />
+        <h3>Active Players: (@participants.Count)</h3>
+        <ul>
+            @if (participants.Any())
+            {
+                foreach (var participant in participants)
+                {
+                    <li>@Html.ActionLink(formattedPlayerName(participant), "Edit", "PlayerManagement", new { playerName = participant.Participant.PlayerName }, new { target = "_blank" })</li>
+                }
+            }
+            else
+            {
+                <li><i>No Participants Found</i></li>
+            }
+        </ul>
+        <h3>Standby Players: (@standby.Count)</h3>
+        <ul>
+            @if (standby.Any())
+            {
+                foreach (var participant in standby)
+                {
+                    <li>@Html.ActionLink(formattedPlayerName(participant), "Edit", "PlayerManagement", new { playerName = participant.Participant.PlayerName }, new { target = "_blank" })</li>
+                }
+            }
+            else
+            {
+                <li><i>No Standby Players Found</i></li>
+            }
+        </ul>
+        <br />
+        @Html.Partial("_ChangeParticipantStatus", new ChangeParticipantStatusModel { RaidSessionId = Model.RaidSessionId })
+        @using (Html.BeginForm("FinalizeSession", "RaidSessions", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => x.RaidSessionId)
+            @Html.HiddenFor(x => x.RaidName)
+            @Html.HiddenFor(x => x.Date)
+            <h4>Session Notes:</h4>
+            @Html.TextAreaFor(x => x.Notes, 3, 100, new { @class = "form-control", style = "width:350px" })
+            <br />
+            <h4>Bosses Killed:</h4>
+            @Html.TextAreaFor(x => x.BossesKilled, 3, 100, new { @class = "form-control", style = "width:350px" })
+            <br />
+            <h4>DKP Award:</h4>
+            @Html.TextBoxFor(x => x.DKPAward, null, new { @class = "form-control", style = "width:350px" })
+            <br />
+            <a class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Finalize Session</a>
+            <div id="confirmModal" class="modal" style="display: none;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Are you sure you wish to finalize this session?</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                            <input type="submit" class="btn btn-success" value="Finalize" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+<script type="text/javascript">
+    function copyStringToClipboard(str) {
+        var el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style = { position: 'absolute', left: '-9999px' };
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+    $(document).ready(function () {
+        $('#copyDataBtn').click(function () {
+            var data = $('#luaTable').text();
+            copyStringToClipboard(data);
+            alert("Addon init data copied to clipboard.");
+        });
+    });
+</script>

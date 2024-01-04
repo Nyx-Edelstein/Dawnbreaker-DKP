@@ -1,0 +1,26 @@
+﻿@using Dawnbreaker_DKP.Web.Models.DKP
+@model Dawnbreaker_DKP.Web.Models.DKP.PlayerDetails
+@{
+    ViewBag.Title = $"Player Management - {Model.PlayerName}";
+}
+
+@Html.Partial("_Details", new PlayerDetailsUpdateModel
+{
+    PlayerName = Model.PlayerName,
+    Class = Model.Class.ToString(),
+    Spec = Model.Spec,
+    RaidRoster = Model.RaidRoster
+})
+
+@Html.Partial("_DKPUpdate", new PlayerDKPUpdateModel
+{
+    PlayerName = @Model.PlayerName,
+    NewDKPTotal = @Model.DKPCurrent,
+    DKPAdjustmentReason = string.Empty
+})
+
+@Html.Partial("_Ledger", Model.PlayerLedger)
+
+<hr/>
+
+@Html.Partial("_Delete", Model)

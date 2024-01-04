@@ -1,0 +1,40 @@
+﻿@using Dawnbreaker_DKP.Web.Models.DKP
+@model List<string>
+@{
+    ViewBag.Title = "Player Index";
+    var inactivePlayers = ViewData["InactivePlayers"] as List<InactivePlayer> ?? new List<InactivePlayer>();
+}
+
+@if(inactivePlayers.Any())
+{
+    <h3>Inactive Players:</h3>
+    <table class="table table-striped table-hover " style="width: 500px">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>DKP</th>
+                <th>Last Active</th>
+                <th>Last DKP Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in inactivePlayers)
+            {
+                <tr>
+                    <td>@Html.ActionLink(player.PlayerName, "Edit", new { playerName = player.PlayerName }, new { target = "_blank" })</td>
+                    <td>@player.DKP</td>
+                    <td>@player.LastActive.ToString("MMM dd, yyyy")</td>
+                    <td>@player.LastDKPChange.ToString("MMM dd, yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr/>
+}
+<h3>All Players:</h3>
+<ul>
+    @foreach (var player in Model)
+    {
+        <li>@Html.ActionLink(player, "Edit", new { playerName = player })</li>
+    }
+</ul>

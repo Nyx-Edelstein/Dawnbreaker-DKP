@@ -1,0 +1,14 @@
+{
+  "name": "tag-it",
+  "homepage": "https://github.com/aehlke/tag-it",
+  "_release": "v2.0",
+  "_resolution": {
+    "type": "tag",
+    "tag": "v2.0",
+    "commit": "09d1ecf52530679662a8074da0a671c6f4ffcbb2"
+  },
+  "_source": "https://github.com/aehlke/tag-it.git",
+  "_target": "v2.0",
+  "_originalSource": "tag-it",
+  "_direct": true
+}

@@ -1,0 +1,24 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.PlayerDetails
+
+<details>
+    <summary>Delete Player</summary>
+    @using (Html.BeginForm("Delete", "PlayerManagement", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.PlayerName)
+        <a class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">BIG RED BUTTON</a>
+        <div id="confirmModal" class="modal" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Are you sure you wish to delete this player and all data associated with them? This is an irreversable change.</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Do not delete</button>
+                        <input type="submit" class="btn btn-success" value="Delete" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</details>

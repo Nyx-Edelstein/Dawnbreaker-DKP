@@ -1,0 +1,43 @@
+﻿@model Dawnbreaker_DKP.Models.Account.AccountLoginRaw
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div id="login-form">
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.TextBoxFor(x => x.Username, new { placeholder = "Username" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+        @Html.PasswordFor(x => x.Password, new { placeholder = "Password" })
+        <div class="text-warning">
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        <div id="captcha" style="max-width: 200px">
+            <hr />
+            <p id="captcha-msg">Prove you are not a spambot.</p>
+            @Html.TextBoxFor(x => x.ConfirmHuman, new { placeholder = "", autocomplete = "off" })
+            <hr />
+        </div>
+        <input type="submit" class="btn btn-primary" />
+    }
+    <br />
+    @Html.ActionLink("Forgot Password?", "PasswordRecovery", "Account")<br />
+    @Html.ActionLink("Haven't registered?", "Register", "Account")<br/><br/>
+</div>
+<script type="text/javascript">
+
+    function not_spambot(e) {
+        $('#captcha-msg').text('You have successfully proven you are not a spambot. Good job!');
+        $('#ConfirmHuman').hide();
+        $('#ConfirmHuman').val(null);
+    }
+
+    $(document).ready(function() {
+        $('#login-form').on('touchstart', not_spambot);
+        $('#login-form').on('mousemove', not_spambot);
+        $('#ConfirmHuman').val("I am a spambot.");
+    });
+</script>

@@ -1,0 +1,50 @@
+﻿@using Dawnbreaker_DKP.Data.DKP.Enum
+@model Dawnbreaker_DKP.Web.Models.DKP.PlayerDetailsUpdateModel
+@{
+    var possibleClasses = new SelectList(Enum.GetNames(typeof(Class)), selectedValue: @Model.Class);
+    var raidRosters = new SelectList(new[] {"Unassigned", "Raid 1", "Raid 2"});
+}
+
+
+<h3>Update Details:</h3>
+<br />
+@using (Html.BeginForm("UpdateDetails", "PlayerManagement", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.PlayerName)
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Class:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.Class, possibleClasses, new { @class = "form-control", style = "height:45px" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Spec:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(x => x.Spec, new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Raid Roster:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.RaidRoster, raidRosters, new { @class = "form-control", style = "height:45px" })
+        </div>
+    </div>
+    <br />
+    <p>
+        <b>Notes:</b>
+        <ul>
+            <li>Spec is for things like dagger/swords. Doesn't need to be specified for every class.</li>
+        </ul>
+    </p>
+    <br />
+    <input type="submit" class="btn btn-primary" />
+}
+<hr />

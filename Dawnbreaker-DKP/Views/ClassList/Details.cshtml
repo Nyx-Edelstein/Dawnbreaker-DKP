@@ -1,0 +1,15 @@
+﻿@using System.Security.Claims
+@using Dawnbreaker_DKP.Data.DKP
+@using Dawnbreaker_DKP.Data.User_Data
+@model System.Collections.Generic.List<Dawnbreaker_DKP.Web.Models.DKP.ClassListData>
+@{
+    ViewBag.Title = "SK Class Lists";
+    var IsOfficer = User.HasClaim(ClaimTypes.Role, PermissionsLevel.Officer.ToString());
+}
+
+@Html.Partial("_TableView", Model)
+@if (IsOfficer)
+{
+    <hr />
+    @Html.Partial("_NewEntry", new ClassListEntry())
+}

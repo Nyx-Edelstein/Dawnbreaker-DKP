@@ -1,0 +1,172 @@
+﻿@using System.Security.Claims
+@using Dawnbreaker_DKP.Data.User_Data
+@using Dawnbreaker_DKP.Extensions
+@{
+    var Username = User.Identity?.Name ?? "Guest";
+    var LoggedIn = Username != "Guest";
+    var IsAdmin = User.HasClaim(ClaimTypes.Role, PermissionsLevel.Admin.ToString());
+    var IsOfficer = User.HasClaim(ClaimTypes.Role, PermissionsLevel.Officer.ToString());
+    var HasMessages = TempData.GetMessages().Any();
+    var HasErrors = TempData.GetErrors().Any();
+    var CurrentUrlPath = Context.Request.Path + "/" + Context.Request.QueryString;
+
+    var AcceptedTAC = Context.Request.Cookies["AcknowledgedTAC"] != null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dawnbreaker DKP</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/tag-it/css/jquery.tagit.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+    <script src="~/lib/popper.js/dist/umd/popper.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.min.js" asp-append-version="true"></script>
+    <script src="~/lib/tag-it/js/tag-it.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="topleft">
+        <span class="navbar-brand">Dawnbreaker DKP</span>
+        <br />
+        <div class="dropdown" align="left" style="margin: 5px 0 0 10px">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span>Navigation</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li>@Html.ActionLink("DKP Table", "Index", "Home")</li>
+                <li>@Html.ActionLink("SK Class Lists", "Details", "ClassList")</li>
+                <li>@Html.ActionLink("Loot History", "Ledger", "Home", new { itemsOnly = true })</li>
+                <li>@Html.ActionLink("Full History", "Ledger", "Home")</li>
+            </ul>
+        </div>
+        @if (IsOfficer)
+        {
+            <div class="dropdown" style="margin: -50px 0 0 135px">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span>Admin Tools</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li>@Html.ActionLink("Session Management", "Index", "RaidSessions")</li>
+                    <li>@Html.ActionLink("Player Management", "Index", "PlayerManagement")</li>
+                    @if (IsAdmin)
+                    {
+                        <li>@Html.ActionLink("Set Permissions", "Update", "Permissions")</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+    <div class="topright">
+        <span class="navbar-brand">Welcome, @Username</span>
+        <br />
+        <div class="dropdown" align="right" style="margin: 5px 10px 0 0">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>Account</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                @if (LoggedIn)
+                {
+                    <li>@Html.ActionLink("Change Password", "ChangePassword", "Account")</li>
+                    <li>@Html.ActionLink("Change Email", "ChangeEmail", "Account")</li>
+                    <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("Login", "Login", "Account", new { lastPage = CurrentUrlPath }, htmlAttributes: null)</li>
+                    <li>@Html.ActionLink("Register", "Register", "Account", new { lastPage = CurrentUrlPath }, htmlAttributes: null)</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid bodycontent">
+
+        @if (!LoggedIn && !AcceptedTAC)
+        {
+            <div class="panel-primary collapse show" style="margin-top: 10px; margin-bottom: 20px" id="tac-panel">
+                <button id="acknowledgeTAC" class="close btn btn-secondary" type="button" data-toggle="collapse" data-target="#tac-panel" aria-expanded="false">
+                    <span size="12">&times;</span>
+                </button>
+                <div class="panel-heading">
+                    <strong>NOTICE:</strong> By using this site, you agree to the <a href="/Home/TAC" target="_blank"><u>Terms and Conditions</u></a>.
+                </div>
+            </div>
+        }
+
+        @if (HasMessages)
+        {
+            <div class="panel-info collapse show" id="messages-panel">
+                <button class="close btn btn-secondary" type="button" data-toggle="collapse" data-target="#messages-panel" aria-expanded="false">
+                    <span size="12">&times;</span>
+                </button>
+                <div class="panel-heading">
+                    <strong>Note:</strong>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        @foreach (var msg in TempData.GetMessages())
+                        {
+                            <li>@msg</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>@ViewData["Title"]</h2>
+            </div>
+            <div class="panel-body">
+                @if (HasErrors)
+                {
+                    <div class="container-fluid">
+                        <div class="panel-danger">
+                            <div class="panel-heading">
+                                <strong>Errors:</strong>
+                            </div>
+                            <div class="panel-body">
+                                <ul>
+                                    @foreach (var error in TempData.GetErrors())
+                                    {
+                                        <li>@error</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        @RenderBody()
+                    </div>
+                }
+                else
+                {
+                    @RenderBody()
+                }
+            </div>
+        </div>
+    </div>
+
+    @RenderSection("Scripts", required: false)
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#acknowledgeTAC').click(function () {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + 60);
+                var c_value = "true; expires=" + exdate.toUTCString();
+                document.cookie = "AcknowledgedTAC" + "=" + c_value;
+            });
+        });
+    </script>
+</body>
+</html>

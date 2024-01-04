@@ -1,0 +1,40 @@
+﻿@using Dawnbreaker_DKP.Data.DKP.Enum
+@model Dawnbreaker_DKP.Data.DKP.ClassListEntry
+@{
+    var raidRosters = new SelectList(new[] { "No Roster", "Raid 1", "Raid 2" });
+    var possibleClasses = new SelectList(Enum.GetNames(typeof(Class)), selectedValue: @Model.Class);
+}
+
+<h2>New Entry:</h2>
+<br/>
+@using (Html.BeginForm("NewEntry", "ClassList"))
+{
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Raid Roster:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.RaidRoster, raidRosters, new { @class = "form-control", style = "height:45px" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Class:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.Class, possibleClasses, new { @class = "form-control", style = "height:45px" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-1">
+            <h4>Name:</h4>
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(x => x.PlayerName, new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <input type="submit" class="btn btn-primary" />
+}

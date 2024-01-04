@@ -1,0 +1,13 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.ImportData
+@{
+    ViewBag.Title = "Import Data";
+}
+<h1 class="text-warning">WARNING: If you are not Xevok or do not have explicit and detailed instructions from Xevok, you should not use this page.</h1>
+<hr/>
+
+@using (Html.BeginForm("ImportData", "Home", FormMethod.Post))
+{
+    @Html.TextAreaFor(x => x.Data, new {@class="form-control", style="width:350px"})
+    <br/>
+    <input type="submit" class="btn btn-primary"/>
+}

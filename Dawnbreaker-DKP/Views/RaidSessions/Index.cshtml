@@ -1,0 +1,40 @@
+﻿@using Dawnbreaker_DKP.Data.DKP
+@using Dawnbreaker_DKP.Web.Models.DKP
+@model List<Dawnbreaker_DKP.Data.DKP.RaidSession>
+@{
+    ViewBag.Title = "Raid Sessions";
+    var openSessions = Model.Where(x => x.Open).ToList();
+    var closedSessions = Model.Where(x => !x.Open).ToList();
+
+    string FormattedName(RaidSession session) => $"{session.RaidName} - {session.Date:MMM dd, yyyy}";
+}
+
+<div>
+    @if (!openSessions.Any() && !closedSessions.Any())
+    {
+        <h3>No Existing Sessions On Record</h3>
+        <hr/>
+    }
+    @if (openSessions.Any())
+    {
+        <h3>Open Sessions:</h3>
+        <ul>
+            @foreach (var session in openSessions)
+            {
+                <li>@Html.ActionLink(FormattedName(session), "Manage", "RaidSessions", new { raidSessionId = session.RaidSessionId })</li>
+            }
+        </ul>
+        <hr />
+    }
+    @Html.Partial("_New", new SessionInitModel())
+    @if (closedSessions.Any())
+    {
+        <h3>Previous Sessions:</h3>
+        <ul>
+            @foreach (var session in closedSessions)
+            {
+                <li>@Html.ActionLink(FormattedName(session), "Manage", "RaidSessions", new { raidSessionId = session.RaidSessionId })</li>
+            }
+        </ul>
+    }
+</div>

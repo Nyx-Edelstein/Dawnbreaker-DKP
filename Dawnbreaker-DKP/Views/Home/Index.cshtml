@@ -1,0 +1,160 @@
+﻿@using Dawnbreaker_DKP.Data.DKP.Enum
+@using Dawnbreaker_DKP.Web.Models.DKP
+@model List<Dawnbreaker_DKP.Web.Models.DKP.DKPTableRow>
+@{
+    ViewBag.Title = "DKP Table";
+
+    Func<Class, string> GetImageFromClassName = className =>
+    {
+        switch (className)
+        {
+            case Class.Druid:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_druid.jpg";
+            case Class.Hunter:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_hunter.jpg";
+            case Class.Mage:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_mage.jpg";
+            case Class.Paladin:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_paladin.jpg";
+            case Class.Priest:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_priest.jpg";
+            case Class.Rogue:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_rogue.jpg";
+            case Class.Shaman:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_shaman.jpg";
+            case Class.Warlock:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_warlock.jpg";
+            case Class.Warrior:
+                return "https://wow.zamimg.com/images/wow/icons/small/classicon_warrior.jpg";
+            default:
+                return "https://wow.zamimg.com/images/wow/icons/small/inv_misc_questionmark.jpg";
+        }
+    };
+
+    var raidFilter = Context.Request.Query["raidFilter"].FirstOrDefault();
+    List<DKPTableRow> Filter(List<DKPTableRow> model) => string.IsNullOrWhiteSpace(raidFilter)
+        ? model
+        : raidFilter == "Unassigned"
+            ? model.Where(x => string.IsNullOrWhiteSpace(x.RaidRoster) || x.RaidRoster == "Unassigned").ToList()
+            : model.Where(x => x.RaidRoster == raidFilter).ToList();
+}
+<style>
+    .sort-active {
+        color: slateblue
+    }
+
+    .sort-btn {
+        cursor: pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-md-6">
+        <p>
+            <button id="noFilterBtn" class="btn btn-info">Show All</button>
+            <button id="filterRaid1Btn" class="btn btn-info">Show Raid 1</button>
+            <button id="filterRaid2Btn" class="btn btn-info">Show Raid 2</button>
+            <button id="filterNoRaidBtn" class="btn btn-info">Show Unassigned</button>
+        </p>
+    </div>
+</div>
+<table class="table table-striped table-hover" style="width: 650px">
+    <thead>
+        <tr>
+            <th>
+                <span>Player</span>
+                <span id="sort-name" class="sort-btn sort-active">&#x21D5;</span>
+            </th>
+            <th>
+                <span>Class</span>
+                <span id="sort-class" class="sort-btn">&#x21D5;</span>
+            </th>
+            <th>
+                <span>DKP</span>
+                <span id="sort-dkp" class="sort-btn">&#x21D5;</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="DKP">
+        @foreach (var record in Filter(Model))
+        {
+            <tr class="dkp-table-row" style="width: 350px">
+                <td class="player-name">@Html.ActionLink(record.PlayerName, "Details", "Player", new { playerName = record.PlayerName }, new { target = "_blank" })</td>
+                <td class="player-class"><img src="@GetImageFromClassName(record.Class)" /></td>
+                <td class="player-dkp">@record.DKPCurrent</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+
+    function do_sort(sortType, selector) {
+        var sorted = $('#DKP .dkp-table-row').detach().sort(function (a, b) {
+            var a_val = selector(a);
+            var b_val = selector(b);
+            if (sortType === "asc") {
+                return a_val.localeCompare(b_val);
+            } else {
+                return b_val.localeCompare(a_val);
+            }
+        });
+        $('#DKP').append(sorted);
+    }
+
+    var nameSortType = "asc";
+    var classSortType = "none";
+    var dkpSortType = "none";
+    $(document).ready(function () {
+        $('#sort-name').click(function () {
+            if (nameSortType === "asc") {
+                nameSortType = "desc";
+            } else {
+                nameSortType = "asc";
+            }
+            do_sort(nameSortType, function (ele) {
+                return $(ele).find(".player-name").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-name").addClass("sort-active");
+        });
+        $('#sort-class').click(function () {
+            if (classSortType === "asc") {
+                classSortType = "desc";
+            } else {
+                classSortType = "asc";
+            }
+            do_sort(classSortType, function (ele) {
+                return $(ele).find(".player-class img").attr("src");
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-class").addClass("sort-active");
+        });
+        $('#sort-dkp').click(function () {
+            if (dkpSortType !== "desc") {
+                dkpSortType = "desc";
+            } else {
+                dkpSortType = "asc";
+            }
+            do_sort(dkpSortType, function (ele) {
+                var val = $(ele).find(".player-dkp").text();
+                var pad = "0000";
+                return pad.substring(0, pad.length - val.length) + val;
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-dkp").addClass("sort-active");
+        });
+
+        $('#noFilterBtn').click(function () {
+            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + '?raidFilter=';
+        });
+        $('#filterRaid1Btn').click(function() {
+            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + '?raidFilter=Raid 1';
+        });
+        $('#filterRaid2Btn').click(function () {
+            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + '?raidFilter=Raid 2';
+        });
+        $('#filterNoRaidBtn').click(function () {
+            window.location.href = window.location.protocol + "//" + window.location.host + window.location.pathname + '?raidFilter=Unassigned';
+        });
+    });
+</script>

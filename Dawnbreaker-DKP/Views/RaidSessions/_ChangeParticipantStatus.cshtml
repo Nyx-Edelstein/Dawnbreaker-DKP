@@ -1,0 +1,17 @@
+﻿@model Dawnbreaker_DKP.Web.Models.DKP.ChangeParticipantStatusModel
+
+@using (Html.BeginForm("ChangeStatus", "RaidSessions", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.RaidSessionId)
+    <h4>Add or move to Active:</h4>
+    @Html.TextAreaFor(x => x.ActivePlayers, new { @class = "form-control", style = "width:350px", placeholder = "Comma, Separated, List, Of, Players" })
+    <br />
+    <h4>Add or move to Standby:</h4>
+    @Html.TextAreaFor(x => x.StandbyPlayers, new { @class = "form-control", style = "width:350px", placeholder = "Comma, Separated, List, Of, Players" })
+    <br />
+    <h4>Remove Players:</h4>
+    @Html.TextAreaFor(x => x.RemovePlayers, new { @class = "form-control", style = "width:350px", placeholder = "Comma, Separated, List, Of, Players" })
+    <br />
+    <button type="submit" class="btn btn-primary">Submit Changes</button>
+}
+<hr />

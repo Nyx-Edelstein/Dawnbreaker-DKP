@@ -1,0 +1,181 @@
+﻿@model List<Dawnbreaker_DKP.Web.Models.DKP.DKPViewModel>
+@{
+    ViewBag.Title = "DKP Ledger";
+    bool.TryParse(ViewContext.ModelState["itemsOnly"]?.AttemptedValue ?? "false", out bool itemsOnly);
+    string filterText = ViewContext.ModelState["sourceFilter"]?.AttemptedValue ?? "";
+}
+<style>
+    .sort-active {
+        color: slateblue
+    }
+
+    .sort-btn {
+        cursor: pointer;
+    }
+</style>
+@using (Html.BeginForm("Ledger", "Home", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-2">
+            <h4>Source Filter</h4>
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="sourceFilter" value="@filterText" placeholder="Filter by source..." />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <h4>Show only items?</h4>
+        </div>
+        <div class="col-md-3">
+            @if (itemsOnly)
+            {
+                <input type="checkbox" name="itemsOnly" value="true" checked="checked" class="form-control">
+            }
+            else
+            {
+                <input type="checkbox" name="itemsOnly" value="true" class="form-control">
+            }
+        </div>
+    </div>
+    <input type="submit" class="btn btn-primary" />
+    <hr/>
+}
+<table class="table table-striped table-hover">
+    <thead class="info">
+        <tr>
+            <th>
+                <span>Entry #</span>
+                <span id="sort-order" class="sort-btn sort-active">&#x21D5;</span>
+            </th>
+            <th>
+                <span>Source</span>
+                <span id="sort-source" class="sort-btn">&#x21D5;</span>
+            </th>
+            <th>
+                <span>Entry</span>
+                <span id="sort-entry" class="sort-btn">&#x21D5;</span>
+            </th>
+            <th>
+                <span>Player</span>
+                <span id="sort-player" class="sort-btn">&#x21D5;</span>
+            </th>
+            <th>
+                <span>DKP Change</span>
+                <span id="sort-dkp" class="sort-btn">&#x21D5;</span>
+            </th>
+            <th>
+                <span>Entry Date</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="ledger">
+        @foreach (var entry in Model)
+        {
+            <tr class="ledger-row">
+                <td class="entry-order">@entry.Order</td>
+                <td class="entry-source">@entry.Source</td>
+                @if (entry.ItemId <= 0)
+                {
+                    <td class="entry-text">@entry.EntryText</td>
+                }
+                else
+                {
+                    <td class="entry-text"><a href="https://classic.wowhead.com/item=@entry.ItemId" target="_blank" style="color: #AA4BFF">@entry.EntryText</a></td>
+                }
+                    <td class="entry-player">@Html.ActionLink(entry.PlayerName, "Details", "Player", new { playerName = entry.PlayerName }, new {target="_blank"})</td>
+                <td class="entry-dkp">@entry.DKPAmount</td>
+                <td>@(new DateTime(entry.EntryTime).ToString("MMM dd, yyyy"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+
+    function do_sort(sortType, selector) {
+        var sorted = $('#ledger .ledger-row').detach().sort(function (a, b) {
+            var a_val = selector(a);
+            var b_val = selector(b);
+            if (sortType === "asc") {
+                return a_val.localeCompare(b_val);
+            } else {
+                return b_val.localeCompare(a_val);
+            }
+        });
+        $('#ledger').append(sorted);
+    }
+
+    var orderSortType = "desc";
+    var sourceSortType = "none";
+    var textSortType = "none";
+    var playerSortType = "none";
+    var dkpSortType = "none";
+    var timeSortType = "none";
+    $(document).ready(function () {
+        $('#sort-order').click(function () {
+            if (orderSortType !== "desc") {
+                orderSortType = "desc";
+            } else {
+                orderSortType = "asc";
+            }
+            do_sort(orderSortType, function (ele) {
+                var val = $(ele).find(".entry-order").text();
+                var pad = "0000000";
+                return pad.substring(0, pad.length - val.length) + val;
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-order").addClass("sort-active");
+        });
+        $('#sort-source').click(function() {
+            if (sourceSortType === "asc") {
+                sourceSortType = "desc";
+            } else {
+                sourceSortType = "asc";
+            }
+            do_sort(sourceSortType, function(ele) {
+                return $(ele).find(".entry-source").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-source").addClass("sort-active");
+        });
+        $('#sort-entry').click(function() {
+            if (textSortType === "asc") {
+                textSortType = "desc";
+            } else {
+                textSortType = "asc";
+            }
+            do_sort(textSortType, function(ele) {
+                return $(ele).find(".entry-text").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-text").addClass("sort-active");
+        });
+        $('#sort-player').click(function () {
+            if (playerSortType === "asc") {
+                playerSortType = "desc";
+            } else {
+                playerSortType = "asc";
+            }
+            do_sort(playerSortType, function (ele) {
+                return $(ele).find(".entry-player").text();
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-player").addClass("sort-active");
+        });
+        $('#sort-dkp').click(function() {
+            if (dkpSortType !== "desc") {
+                dkpSortType = "desc";
+            } else {
+                dkpSortType = "asc";
+            }
+            do_sort(dkpSortType, function (ele) {
+                var val = $(ele).find(".entry-dkp").text();
+                var pad = "0000";
+                return pad.substring(0, pad.length - val.length) + val;
+            });
+            $(".sort-btn").removeClass("sort-active");
+            $("#sort-dkp").addClass("sort-active");
+        });
+    });
+</script>
